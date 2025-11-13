@@ -1,56 +1,177 @@
-# How to use this ChatGPT Teams Bot app
+# 🤖 ChatGPT Teams Bot
 
-This is a ChatGPT Teams Bot app to let you chat with ChatGPT in Microsoft Teams.
+Bot Microsoft Teams avec support multi-provider IA (OpenAI, Anthropic Claude, Google Gemini, Ollama).
 
-You could also try the [ChatGPT WeChat Bot](https://github.com/formulahendry/chatgpt-wechat-bot).
+## 📋 Vue d'ensemble
 
-![ChatGPT](./images/chatgpt-chat.png)
+Ce bot Teams utilise le **Microsoft Bot Framework** officiel et permet de discuter avec différents modèles d'IA directement depuis Microsoft Teams:
 
-## Prerequisites
+- **OpenAI** (GPT-3.5, GPT-4)
+- **Anthropic** (Claude 3 Opus, Sonnet, Haiku)
+- **Google** (Gemini Pro)
+- **Ollama** (Llama 2, Mistral, Mixtral, etc. - en local)
 
-- An [OpenAI](https://openai.com/api/) account
-- [NodeJS](https://nodejs.org/en/) (Tested on Node.js 18.12.1)
-- An M365 account. If you do not have M365 account, apply one from [M365 developer program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
-- Latest stable version of [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) (Tested on version 4.1.3)
+## 🚀 Démarrage rapide
 
-## Get API key
+### 1️⃣ Configuration Azure AD
 
-Get an OpenAI API key from https://beta.openai.com/account/api-keys.
+**IMPORTANT**: Pour connecter votre bot à Microsoft Teams, vous devez d'abord configurer Azure AD.
 
-## Debug
+👉 **[Suivez le guide complet de configuration Azure AD](./README_AZURE_SETUP.md)**
 
-- Create a `.env.teamsfx.local` file under `bot` folder, and set the OpenAI API key in `.env.teamsfx.local` file:
-    ```
-    OPENAI_API_KEY=xxxxxxxxxx
-    ```
-- From Visual Studio Code: Start debugging the project by hitting the `F5` key in Visual Studio Code. 
-- Alternatively use the `Run and Debug Activity Panel` in Visual Studio Code and click the `Run and Debug` green arrow button.
-- From TeamsFx CLI: Start debugging the project by executing the command `teamsfx preview --local` in your project directory.
+Ce guide vous accompagne pas à pas pour:
+- Créer une application dans Azure AD (https://entra.microsoft.com)
+- Obtenir votre Application (client) ID
+- Obtenir votre Directory (tenant) ID
+- Créer un secret client
+- Configurer les permissions
 
-## Deploy to Azure
+### 2️⃣ Configuration du bot
 
-First, set `OPENAI_API_KEY` in envionment variables of your OS.
+Une fois Azure AD configuré:
 
-Then, deploy your project to Azure by following these steps:
+```bash
+# 1. Copier le fichier d'exemple
+cp .env.example .env
 
-| From Visual Studio Code                                                                                                                                                                                                                                                                                                                                                  | From TeamsFx CLI                                                                                                                                                                                                                    |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <ul><li>Open Teams Toolkit, and sign into Azure by clicking the `Sign in to Azure` under the `ACCOUNTS` section from sidebar.</li> <li>After you signed in, select a subscription under your account.</li><li>Open the Teams Toolkit and click `Provision in the cloud` from DEPLOYMENT section or open the command palette and select: `Teams: Provision in the cloud`.</li><li>Open the Teams Toolkit and click `Deploy to the cloud` or open the command palette and select: `Teams: Deploy to the cloud`.</li></ul> | <ul> <li>Run command `teamsfx account login azure`.</li> <li>Run command `teamsfx account set --subscription <your-subscription-id>`.</li> <li> Run command `teamsfx provision`.</li> <li>Run command: `teamsfx deploy`. </li></ul> |
+# 2. Éditer .env et remplir vos identifiants
+# MICROSOFT_APP_ID=votre-app-id
+# MICROSOFT_APP_PASSWORD=votre-secret
+# MICROSOFT_APP_TENANT_ID=votre-tenant-id
 
-> Note: Provisioning and deployment may incur charges to your Azure Subscription.
+# 3. Installer les dépendances
+npm install
 
-## Preview
+# 4. Compiler le projet
+npm run build
 
-Once the provisioning and deployment steps are finished, you can preview your app:
+# 5. Démarrer le bot
+npm run dev
+```
 
-- From Visual Studio Code
+### 3️⃣ Tester le bot
 
-  1. Open the `Run and Debug Activity Panel`.
-  1. Select `Launch Remote (Edge)` or `Launch Remote (Chrome)` from the launch configuration drop-down.
-  1. Press the Play (green arrow) button to launch your app - now running remotely from Azure.
+Utilisez le **Bot Framework Emulator** pour tester localement:
+1. Téléchargez: https://github.com/Microsoft/BotFramework-Emulator/releases
+2. Connectez-vous à: `http://localhost:3978/api/messages`
+3. Entrez vos identifiants Azure AD
 
-- From TeamsFx CLI: execute `teamsfx preview --remote` in your project directory to launch your application.
+## 📁 Structure du projet
 
-## Further reading
+```
+bot/
+├── index.ts              # Point d'entrée principal
+├── config.ts             # Configuration (Azure AD + AI providers)
+├── teamsBot.ts          # Logique du bot Teams
+├── providers/           # Providers IA
+│   ├── openai.ts        # Provider OpenAI
+│   ├── anthropic.ts     # Provider Anthropic
+│   ├── google.ts        # Provider Google Gemini
+│   ├── ollama.ts        # Provider Ollama
+│   └── factory.ts       # Factory pattern
+├── adaptiveCards/       # Cartes adaptatives Teams
+└── .env                 # Configuration (à créer)
+```
 
-- [chatgpt-api Node SDK](https://github.com/transitive-bullshit/chatgpt-api): it is a 3rd-party ChatGPT npm used in this Teams bot. 
+## ⚙️ Configuration
+
+### Variables d'environnement requises
+
+```bash
+# Azure AD (OBLIGATOIRE)
+MICROSOFT_APP_ID=votre-app-id
+MICROSOFT_APP_PASSWORD=votre-secret
+MICROSOFT_APP_TENANT_ID=votre-tenant-id
+
+# Provider IA (choisir un)
+AI_PROVIDER=openai  # ou: anthropic, google, ollama
+
+# OpenAI
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-3.5-turbo
+```
+
+👉 **Voir [.env.example](./.env.example) pour la configuration complète**
+
+## 🔐 Guide de configuration Azure AD
+
+Pour configurer Azure AD et obtenir vos identifiants:
+
+👉 **[Guide complet: README_AZURE_SETUP.md](./README_AZURE_SETUP.md)**
+
+Ce guide couvre:
+- ✅ Création d'une application Azure AD
+- ✅ Configuration de l'authentification
+- ✅ Création d'un secret client
+- ✅ Configuration des permissions API
+- ✅ Tests avec Bot Framework Emulator
+- ✅ Déploiement sur Azure
+
+## 📝 Scripts disponibles
+
+```bash
+npm run dev      # Démarrer en mode développement (avec hot-reload)
+npm run build    # Compiler le projet TypeScript
+npm start        # Démarrer en mode production
+npm run watch    # Démarrer et recharger automatiquement
+```
+
+## 🧠 Changer de provider IA
+
+Pour changer de provider IA, modifiez simplement `AI_PROVIDER` dans `.env`:
+
+```bash
+# OpenAI (ChatGPT)
+AI_PROVIDER=openai
+
+# Anthropic (Claude)
+AI_PROVIDER=anthropic
+
+# Google (Gemini)
+AI_PROVIDER=google
+
+# Ollama (Local)
+AI_PROVIDER=ollama
+```
+
+👉 **[Guide multi-provider: README_MULTI_AI.md](./README_MULTI_AI.md)**
+
+## 🔧 Dépannage
+
+### Le bot ne démarre pas
+
+Vérifiez que:
+- ✅ Node.js 18+ est installé: `node --version`
+- ✅ Les dépendances sont installées: `npm install`
+- ✅ Le fichier `.env` existe et contient les bons identifiants
+- ✅ `MICROSOFT_APP_ID` et `MICROSOFT_APP_PASSWORD` sont définis
+
+### Erreur "Unauthorized"
+
+- ✅ Vérifiez que l'App ID est correct
+- ✅ Vérifiez que le secret client n'a pas expiré
+- ✅ Recréez un nouveau secret dans Azure AD si nécessaire
+
+### Le bot ne répond pas
+
+- ✅ Vérifiez que la clé API du provider IA est valide
+- ✅ Consultez les logs du serveur
+- ✅ Testez la route de santé: `http://localhost:3978/health`
+
+## 📚 Documentation
+
+- [Guide de configuration Azure AD](./README_AZURE_SETUP.md) - **Commencez ici!**
+- [Guide multi-provider IA](./README_MULTI_AI.md)
+- [Bot Framework Documentation](https://docs.microsoft.com/azure/bot-service/)
+- [Microsoft Teams Developer Docs](https://learn.microsoft.com/microsoftteams/platform/)
+
+## 🆘 Support
+
+Besoin d'aide? Consultez:
+1. [Guide de configuration Azure AD](./README_AZURE_SETUP.md)
+2. [Section dépannage](#-dépannage)
+3. Documentation Microsoft officielle
+
+## 📄 Licence
+
+MIT

@@ -3,7 +3,7 @@ import {
   CardFactory,
   TurnContext,
 } from "botbuilder";
-import rawWelcomeCard from "./adaptiveCards/welcome.json" assert { type: "json" };
+import rawWelcomeCard from "./adaptiveCards/welcome.json" with { type: "json" };
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
 import { AIProviderFactory, BaseAIProvider } from './providers/index.js';
 import config from "./config.js";

@@ -1,15 +1,35 @@
 import { AIProviderConfig } from './providers/index.js';
+import dotenv from 'dotenv';
+
+// Charger les variables d'environnement
+dotenv.config();
 
 const config = {
-  botId: process.env.BOT_ID,
-  botPassword: process.env.BOT_PASSWORD,
+  // ============================================
+  // Configuration Azure AD (Microsoft Entra)
+  // ============================================
+  // Ces identifiants sont obtenus depuis le portail Azure AD (entra.microsoft.com)
 
-  // Configuration du provider IA
+  // Application (client) ID depuis "Applications d'entreprise" → "Nouvelle inscription"
+  microsoftAppId: process.env.MICROSOFT_APP_ID,
+
+  // Client Secret depuis "Certificats et secrets" → "Nouveau secret client"
+  microsoftAppPassword: process.env.MICROSOFT_APP_PASSWORD,
+
+  // Directory (tenant) ID depuis la vue d'ensemble de l'application
+  microsoftAppTenantId: process.env.MICROSOFT_APP_TENANT_ID,
+
+  // Port du serveur (défaut: 3978)
+  port: process.env.PORT || process.env.port || 3978,
+
+  // ============================================
+  // Configuration du Provider d'IA
+  // ============================================
   ai: {
     // Type de provider: 'openai', 'anthropic', 'google', 'ollama'
     type: (process.env.AI_PROVIDER || 'openai') as 'openai' | 'anthropic' | 'google' | 'ollama',
 
-    // Configuration OpenAI
+    // Configuration OpenAI (ChatGPT)
     openai: {
       apiKey: process.env.OPENAI_API_KEY || '',
       model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
