@@ -43,7 +43,9 @@ Bot Microsoft Teams avec support multi-provider IA - Connectez ChatGPT, Claude, 
 
 Avant de commencer, assurez-vous d'avoir:
 
-- **Node.js 18+** ([Télécharger](https://nodejs.org/))
+- **Node.js 18.0 ou supérieur** ([Télécharger](https://nodejs.org/))
+  - ✅ Testé avec Node.js 18.19.0, 20.x et 22.x
+  - Vérifiez votre version: `node --version`
 - **Un compte Microsoft 365** (avec droits administrateur pour créer des apps)
 - **Une clé API** pour au moins un provider IA:
   - [OpenAI API Key](https://platform.openai.com/api-keys)
