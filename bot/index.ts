@@ -3,6 +3,12 @@
 // ============================================
 // Bot Framework based Microsoft Teams bot with multi-AI provider support
 
+// Polyfill pour crypto (requis pour les dépendances Azure en mode ESM)
+import crypto from "crypto";
+if (typeof globalThis.crypto === 'undefined') {
+  (globalThis as any).crypto = crypto;
+}
+
 import express from "express";
 import { BotFrameworkAdapter, TurnContext, MemoryStorage, ConversationState, UserState } from "botbuilder";
 import { TeamsBot } from "./teamsBot.js";
