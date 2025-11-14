@@ -1,0 +1,16 @@
+{
+  "name": "ChatGPT Teams Bot (Dev)",
+  "description": "Bot Teams avec Multi-AI Provider - Mode Développement",
+  "services": [
+    {
+      "type": "endpoint",
+      "name": "development",
+      "id": "1",
+      "appId": "",
+      "appPassword": "",
+      "endpoint": "http://localhost:3978/api/messages"
+    }
+  ],
+  "padlock": "",
+  "version": "2.0"
+}
