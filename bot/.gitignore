@@ -3,6 +3,7 @@ node_modules/
 
 # misc
 .env
+.env.backup
 .deployment
 .DS_Store
 
