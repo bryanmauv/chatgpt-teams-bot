@@ -15,20 +15,23 @@ import { TeamsBot } from "./teamsBot.js";
 import config from "./config.js";
 
 // Validation de la configuration
-if (!config.microsoftAppId || !config.microsoftAppPassword) {
-  console.error('❌ ERREUR: Les identifiants Azure AD sont requis!');
-  console.error('   Veuillez configurer MICROSOFT_APP_ID et MICROSOFT_APP_PASSWORD dans votre fichier .env');
-  console.error('   Consultez le README.md pour les instructions de configuration Azure AD');
-  process.exit(1);
+const isDevelopmentMode = !config.microsoftAppId || !config.microsoftAppPassword;
+
+if (isDevelopmentMode) {
+  console.warn('⚠️  MODE DÉVELOPPEMENT: Aucun identifiant Azure AD configuré');
+  console.warn('   Le bot fonctionne SANS authentification (uniquement pour tests locaux)');
+  console.warn('   Pour production, configurez MICROSOFT_APP_ID et MICROSOFT_APP_PASSWORD');
+  console.warn('   Consultez bot/README_AZURE_SETUP.md pour la configuration Azure AD\n');
 }
 
 // ============================================
 // Configuration du Bot Framework Adapter
 // ============================================
 // L'adaptateur gère la communication avec le Bot Framework Service
+// En mode développement (sans auth), laissez appId et appPassword vides
 const adapter = new BotFrameworkAdapter({
-  appId: config.microsoftAppId,
-  appPassword: config.microsoftAppPassword,
+  appId: config.microsoftAppId || '',
+  appPassword: config.microsoftAppPassword || '',
 });
 
 // ============================================
@@ -102,7 +105,13 @@ app.listen(PORT, () => {
   console.log('   ============================================');
   console.log(`   📡 Port: ${PORT}`);
   console.log(`   🧠 AI Provider: ${config.ai.type}`);
-  console.log(`   🔐 App ID: ${config.microsoftAppId?.substring(0, 8)}...`);
+
+  if (isDevelopmentMode) {
+    console.log(`   🔓 Mode: Développement (sans authentification)`);
+  } else {
+    console.log(`   🔐 App ID: ${config.microsoftAppId?.substring(0, 8)}...`);
+  }
+
   console.log('   ============================================\n');
   console.log(`   ✅ Le bot est prêt à recevoir des messages sur:`);
   console.log(`      http://localhost:${PORT}/api/messages\n`);
