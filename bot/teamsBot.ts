@@ -3,10 +3,19 @@ import {
   CardFactory,
   TurnContext,
 } from "botbuilder";
-import rawWelcomeCard from "./adaptiveCards/welcome.json" with { type: "json" };
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 import { AdaptiveCards } from "@microsoft/adaptivecards-tools";
 import { AIProviderFactory, BaseAIProvider } from './providers/index.js';
 import config from "./config.js";
+
+// Charger le JSON de manière compatible avec toutes les versions de Node.js
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rawWelcomeCard = JSON.parse(
+  readFileSync(join(__dirname, "./adaptiveCards/welcome.json"), "utf-8")
+);
 
 export class TeamsBot extends TeamsActivityHandler {
   private aiProvider: BaseAIProvider;
